@@ -159,6 +159,35 @@ footer{padding:56px 40px;border-top:1px solid var(--border);display:grid;grid-te
   footer{grid-template-columns:1fr}
   .steps::before{display:none}
 }
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(8px)}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--s1);border:1px solid var(--border2);width:100%;max-width:520px;margin:20px;position:relative;transform:translateY(20px);transition:transform .3s}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-hd{background:var(--s2);padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-title{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--lime);letter-spacing:2px;font-weight:500}
+.modal-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:0 4px;transition:color .2s}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:28px 24px}
+.modal-step{display:none}.modal-step.active{display:block}
+.modal-intro{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:24px}
+.modal-intro strong{color:var(--text)}
+.modal-key-box{background:var(--bg);border:1px solid rgba(212,245,78,.3);padding:16px 20px;margin:16px 0;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--lime);word-break:break-all;line-height:1.6}
+.modal-key-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:3px;margin-bottom:6px}
+.modal-warn{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--orange);margin-top:8px}
+.modal-limit{background:rgba(212,245,78,.06);border:1px solid rgba(212,245,78,.15);padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:20px}
+.modal-limit span{color:var(--lime);font-weight:600}
+.copy-btn{background:var(--s2);border:1px solid var(--border2);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px;padding:8px 16px;cursor:pointer;letter-spacing:1px;transition:all .2s;margin-top:8px;width:100%}
+.copy-btn:hover{border-color:var(--lime);color:var(--lime)}
+.modal-footer{padding:0 24px 24px;display:flex;gap:10px}
+.modal-btn{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;padding:12px;border:none;letter-spacing:2px;cursor:pointer;transition:all .2s;flex:1}
+.modal-btn-primary{background:var(--lime);color:#03030a}
+.modal-btn-primary:hover{background:var(--lime2)}
+.modal-btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border2)}
+.modal-btn-ghost:hover{border-color:var(--muted);color:var(--text)}
+.modal-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(3,3,10,.3);border-top-color:#03030a;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -174,7 +203,7 @@ footer{padding:56px 40px;border-top:1px solid var(--border);display:grid;grid-te
       <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
       <button class="lang-btn" onclick="setLang('fr',this)">FR</button>
     </div>
-    <button class="nav-cta" onclick="scrollTo('demo')" data-i18n="nav-cta">GET API KEY →</button>
+    <button class="nav-cta" onclick="openModal()" data-i18n="nav-cta">GET API KEY →</button>
   </div>
 </nav>
 
@@ -198,7 +227,7 @@ footer{padding:56px 40px;border-top:1px solid var(--border);display:grid;grid-te
   </p>
 
   <div class="hero-actions">
-    <a href="#demo" class="btn-primary" data-i18n="cta1">TRY THE DEMO →</a>
+    <a href="#demo" class="btn-primary" data-i18n="cta1" onclick="event.preventDefault();openModal()">TRY THE DEMO →</a>
     <a href="#api" class="btn-ghost" data-i18n="cta2">VIEW API DOCS</a>
   </div>
 
@@ -486,7 +515,7 @@ const translations = {
   fr: {
     "nav-tag":"API MÉMOIRE","nav-cta":"OBTENIR UNE CLÉ →",
     "badge":"🧠 En production · API v0.2",
-    "h1":"Vos agents IA<br><span class='accent'>n' oublient plus</span><br><span class='dim'>jamais.</span>",
+    "h1":"Vos agents IA<br><span class='accent'>ne oublient plus</span><br><span class='dim'>jamais.</span>",
     "sub":"Infrastructure <strong>mémoire plug-and-play</strong> pour agents IA B2B.<br>Trois endpoints. Une clé API. Votre agent passe<br>d'amnésique à contextuel en quelques minutes.",
     "cta1":"TESTER LA DÉMO →","cta2":"VOIR LA DOC API",
     "m1":"Endpoints principaux","m2":"Temps de rappel moyen","m3":"Mémoires par agent","m4":"Données hébergées EU",
@@ -664,6 +693,174 @@ function toast(msg) {
   t.textContent = msg; t.classList.add('show');
   clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2500);
 }
+
+// ── MODAL ────────────────────────────────────────────────────────────────────
+function openModal() {
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  translateModal();
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e) { if(e.target === document.getElementById('modalOverlay')) closeModal(); }
+
+function translateModal() {
+  const fr = lang === 'fr';
+  document.getElementById('modalTitle').textContent = fr ? 'OBTENIR UNE CLÉ DÉMO' : 'GET FREE DEMO KEY';
+  document.getElementById('modalIntro').innerHTML = fr
+    ? '<strong>100 mémoires gratuites.</strong> Sans carte bancaire. Sans engagement.<br>Décrivez votre agent et obtenez votre clé instantanément.'
+    : '<strong>100 free memories.</strong> No credit card. No commitment.<br>Tell us about your agent and get your key instantly.';
+  document.getElementById('modalLimit').innerHTML = fr
+    ? 'La démo inclut <span>100 mémoires</span> · 1 agent · Tous les endpoints débloqués'
+    : 'Free demo includes <span>100 memories</span> · 1 agent · All endpoints unlocked';
+  document.getElementById('lName').textContent = fr ? 'VOTRE NOM' : 'YOUR NAME';
+  document.getElementById('mName').placeholder = fr ? 'Baptiste' : 'Your name';
+  document.getElementById('lEmail').textContent = fr ? 'EMAIL PROFESSIONNEL' : 'PROFESSIONAL EMAIL';
+  document.getElementById('lUsecase').textContent = fr ? 'DÉCRIVEZ VOTRE CAS D'USAGE' : 'DESCRIBE YOUR AGENT USE CASE';
+  document.getElementById('mUsecase').placeholder = fr
+    ? 'ex: Bot support client qui doit mémoriser l'historique entre les sessions'
+    : 'e.g. Customer support bot that needs to remember user history across sessions';
+  document.getElementById('btnCancel').textContent = fr ? 'ANNULER' : 'CANCEL';
+  document.getElementById('btnSubmit').textContent = fr ? 'OBTENIR MA CLÉ →' : 'GET MY KEY →';
+}
+
+async function submitDemo() {
+  const name = document.getElementById('mName').value.trim();
+  const email = document.getElementById('mEmail').value.trim();
+  const usecase = document.getElementById('mUsecase').value.trim();
+  const errEl = document.getElementById('mError');
+  const btn = document.getElementById('btnSubmit');
+  const fr = lang === 'fr';
+
+  errEl.textContent = '';
+  if(!name) { errEl.textContent = fr ? '→ Entrez votre nom' : '→ Enter your name'; return; }
+  if(!email || !email.includes('@')) { errEl.textContent = fr ? '→ Email invalide' : '→ Invalid email'; return; }
+  if(usecase.length < 10) { errEl.textContent = fr ? '→ Décrivez votre cas d'usage (min 10 caractères)' : '→ Describe your use case (min 10 chars)'; return; }
+
+  btn.innerHTML = '<span class="modal-spinner"></span>' + (fr ? 'GÉNÉRATION...' : 'GENERATING...');
+  btn.disabled = true;
+
+  try {
+    const r = await fetch(BASE + '/auth/demo', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name, email, usecase})
+    });
+    const data = await r.json();
+    if(!r.ok) throw new Error(data.detail || 'Error');
+
+    // Show success step
+    document.getElementById('generatedKey').textContent = data.full_key;
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step2').classList.add('active');
+    document.getElementById('modalTitle').textContent = fr ? '✓ CLÉ PRÊTE !' : '✓ KEY READY!';
+
+    if(fr) {
+      document.getElementById('successMsg').innerHTML = '✓ Votre clé démo est prête. <strong>Copiez-la maintenant</strong> — elle ne sera plus affichée.';
+      document.getElementById('lYourKey').textContent = 'VOTRE CLÉ API';
+      document.getElementById('warnOnce').textContent = '⚠ Affichée une seule fois — conservez-la';
+      document.getElementById('btnCopy').textContent = 'COPIER LA CLÉ';
+      document.getElementById('btnTryNow').textContent = 'TESTER MAINTENANT →';
+      document.getElementById('nextStep1').textContent = '1. Créer un agent → POST /api/v1/agents';
+      document.getElementById('nextStep2').textContent = '2. Stocker → POST /agents/{id}/remember';
+      document.getElementById('nextStep3').textContent = '3. Injecter → POST /agents/{id}/inject-context';
+    }
+
+    // Pre-fill demo fields
+    ['k1','k2','k3'].forEach(id => document.getElementById(id).value = data.full_key);
+
+  } catch(e) {
+    errEl.textContent = '→ ' + e.message;
+    btn.innerHTML = fr ? 'OBTENIR MA CLÉ →' : 'GET MY KEY →';
+    btn.disabled = false;
+  }
+}
+
+function copyKey() {
+  const key = document.getElementById('generatedKey').textContent;
+  navigator.clipboard.writeText(key).then(() => {
+    const btn = document.getElementById('btnCopy');
+    btn.textContent = lang === 'fr' ? '✓ COPIÉ !' : '✓ COPIED!';
+    btn.style.color = 'var(--lime)';
+    btn.style.borderColor = 'var(--lime)';
+    setTimeout(() => {
+      btn.textContent = lang === 'fr' ? 'COPIER LA CLÉ' : 'COPY KEY TO CLIPBOARD';
+      btn.style.color = ''; btn.style.borderColor = '';
+    }, 2000);
+  });
+}
+
+function goToDemo() {
+  closeModal();
+  // Reset to step 1 for next time
+  setTimeout(() => {
+    document.getElementById('step1').classList.add('active');
+    document.getElementById('step2').classList.remove('active');
+    document.getElementById('mName').value = '';
+    document.getElementById('mEmail').value = '';
+    document.getElementById('mUsecase').value = '';
+    document.getElementById('btnSubmit').disabled = false;
+    document.getElementById('btnSubmit').textContent = 'GET MY KEY →';
+  }, 400);
+  document.getElementById('demo').scrollIntoView({behavior:'smooth'});
+}
+
+// Re-translate modal when lang changes
+const _origSetLang = setLang;
+// patch setLang to also update modal
+
 </script>
+
+<!-- MODAL GET API KEY -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title" id="modalTitle">GET FREE DEMO KEY</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+
+    <!-- STEP 1 : FORM -->
+    <div class="modal-step active" id="step1">
+      <div class="modal-body">
+        <p class="modal-intro" id="modalIntro"><strong>100 free memories.</strong> No credit card. No commitment.<br>Tell us about your agent and get your key instantly.</p>
+        <div class="modal-limit" id="modalLimit">Free demo includes <span>100 memories</span> · 1 agent · All endpoints unlocked</div>
+        <div class="d-label" id="lName">YOUR NAME</div>
+        <input class="d-field" id="mName" placeholder="Baptiste" style="margin-bottom:12px">
+        <div class="d-label" id="lEmail">PROFESSIONAL EMAIL</div>
+        <input class="d-field" id="mEmail" placeholder="baptiste@company.com" type="email" style="margin-bottom:12px">
+        <div class="d-label" id="lUsecase">DESCRIBE YOUR AGENT USE CASE</div>
+        <textarea class="d-field" id="mUsecase" rows="3" placeholder="e.g. Customer support bot that needs to remember user history across sessions" style="margin-bottom:4px"></textarea>
+        <div id="mError" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);min-height:20px;margin-top:8px"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-ghost" onclick="closeModal()" id="btnCancel">CANCEL</button>
+        <button class="modal-btn modal-btn-primary" onclick="submitDemo()" id="btnSubmit">GET MY KEY →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 : SUCCESS -->
+    <div class="modal-step" id="step2">
+      <div class="modal-body">
+        <p class="modal-intro" id="successMsg">✓ Your demo key is ready. <strong>Copy it now</strong> — it won't be shown again.</p>
+        <div class="modal-key-label" id="lYourKey">YOUR API KEY</div>
+        <div class="modal-key-box" id="generatedKey">sk-mem-...</div>
+        <div class="modal-warn" id="warnOnce">⚠ Shown only once — store it somewhere safe</div>
+        <button class="copy-btn" onclick="copyKey()" id="btnCopy">COPY KEY TO CLIPBOARD</button>
+        <div style="height:16px"></div>
+        <div class="modal-limit" id="nextStepsLabel">Next steps:<br>
+          <span id="nextStep1">1. Create an agent → POST /api/v1/agents</span><br>
+          <span id="nextStep2">2. Store memories → POST /agents/{id}/remember</span><br>
+          <span id="nextStep3">3. Inject context → POST /agents/{id}/inject-context</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-primary" onclick="goToDemo()" id="btnTryNow">TRY IT NOW →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

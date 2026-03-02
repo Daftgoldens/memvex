@@ -6,15 +6,20 @@ from app.config import settings
 
 
 def _fix_database_url(url: str) -> str:
+    """
+    Railway (and most cloud providers) inject postgresql:// 
+    but SQLAlchemy async requires postgresql+asyncpg://
+    """
     if url.startswith("postgresql://"):
-        url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
-    elif url.startswith("postgres://"):
-        url = url.replace("postgres://", "postgresql+asyncpg://", 1)
-    url = url.split("?")[0]  # strip sslmode=require
+        return url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    if url.startswith("postgres://"):
+        return url.replace("postgres://", "postgresql+asyncpg://", 1)
     return url
 
+
 _db_url = _fix_database_url(settings.database_url)
-engine = create_async_engine(_db_url, echo=False, connect_args={"ssl": True})
+
+engine = create_async_engine(_db_url, echo=False)
 AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
 
