@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
-from app.models import ApiKey
+from app.models import ApiKey, Agent
 from app.schemas import ApiKeyCreate, ApiKeyResponse, ApiKeyCreatedResponse, ApiKeyDemoCreate, DemoKeyCreatedResponse
 from app.auth import create_api_key, create_demo_key, get_api_key
 
@@ -13,8 +13,7 @@ router = APIRouter(tags=["Authentication"])
 
 
 @router.post("/keys", response_model=ApiKeyCreatedResponse, status_code=201,
-             summary="Create an API key (admin)",
-             description="Returns the full key **once** — store it securely.")
+             summary="Create an API key (admin)")
 async def create_key(data: ApiKeyCreate, db: AsyncSession = Depends(get_db)):
     api_key, full_key = await create_api_key(db, data.name)
     return ApiKeyCreatedResponse(
@@ -27,13 +26,40 @@ async def create_key(data: ApiKeyCreate, db: AsyncSession = Depends(get_db)):
 
 @router.post("/demo", response_model=DemoKeyCreatedResponse, status_code=201,
              summary="Get a free demo API key",
-             description="Creates a demo key limited to 100 memories. No credit card required.")
+             description="Creates a demo key limited to 100 memories. One key per email.")
 async def create_demo(data: ApiKeyDemoCreate, db: AsyncSession = Depends(get_db)):
+    # Bloquer si l'email a déjà une clé demo active
+    existing = await db.execute(
+        select(ApiKey).where(
+            ApiKey.contact_email == data.email,
+            ApiKey.is_demo == True,
+            ApiKey.is_active == True,
+        )
+    )
+    if existing.scalar_one_or_none():
+        raise HTTPException(
+            status_code=409,
+            detail="A demo key already exists for this email. Check your inbox or contact us to upgrade."
+        )
+
+    # Créer la clé
     api_key, full_key = await create_demo_key(db, data.name, data.email, data.usecase)
+
+    # Créer automatiquement un premier agent
+    agent = Agent(
+        name=f"{data.name}'s agent",
+        description="Auto-created demo agent",
+        api_key_id=api_key.id,
+    )
+    db.add(agent)
+    await db.commit()
+    await db.refresh(agent)
+
     return DemoKeyCreatedResponse(
         full_key=full_key,
+        agent_id=str(agent.id),
         memory_limit=100,
-        message="Your demo key is ready! You have 100 free memories. Reply to this request to upgrade.",
+        message="Ready! Your API key and first agent are set up.",
     )
 
 

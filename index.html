@@ -450,7 +450,7 @@ footer{padding:56px 40px;border-top:1px solid var(--border);display:grid;grid-te
   </div>
   <div class="ft-col">
     <h4 data-i18n="ft-dev">DEVELOPERS</h4>
-    <a href="https://memvex.up.railway.app/docs" target="_blank">Swagger UI</a>
+    <a href="https://agent-memory-layer-production.up.railway.app/docs" target="_blank">Swagger UI</a>
     <a href="#" data-i18n="ft-docs">Documentation</a>
     <a href="#" data-i18n="ft-status">Status page</a>
     <a href="#" data-i18n="ft-contact">Contact</a>
@@ -749,30 +749,44 @@ async function submitDemo() {
       body: JSON.stringify({name, email, usecase})
     });
     const data = await r.json();
-    if(!r.ok) throw new Error(data.detail || 'Error');
+    if(!r.ok) throw new Error(typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail));
 
     // Show success step
     document.getElementById('generatedKey').textContent = data.full_key;
+    document.getElementById('generatedAgentId').textContent = data.agent_id;
     document.getElementById('step1').classList.remove('active');
     document.getElementById('step2').classList.add('active');
-    document.getElementById('modalTitle').textContent = fr ? '✓ CLÉ PRÊTE !' : '✓ KEY READY!';
+    document.getElementById('modalTitle').textContent = fr ? '✓ TOUT EST PRÊT !' : '✓ ALL SET!';
 
     if(fr) {
-      document.getElementById('successMsg').innerHTML = '✓ Votre clé démo est prête. <strong>Copiez-la maintenant</strong> — elle ne sera plus affichée.';
+      document.getElementById('successMsg').innerHTML = '✓ Clé et agent créés. <strong>Copiez-les maintenant</strong> — la clé ne sera plus affichée.';
       document.getElementById('lYourKey').textContent = 'VOTRE CLÉ API';
+      document.getElementById('lAgentId').textContent = 'VOTRE AGENT ID — pré-rempli dans la démo';
       document.getElementById('warnOnce').textContent = '⚠ Affichée une seule fois — conservez-la';
       document.getElementById('btnCopy').textContent = 'COPIER LA CLÉ';
+      document.getElementById('btnCopyAgent').textContent = 'COPIER L\'AGENT ID';
       document.getElementById('btnTryNow').textContent = 'TESTER MAINTENANT →';
-      document.getElementById('nextStep1').textContent = '1. Créer un agent → POST /api/v1/agents';
-      document.getElementById('nextStep2').textContent = '2. Stocker → POST /agents/{id}/remember';
+      document.getElementById('nextStep1').textContent = '1. Stocker → POST /agents/{id}/remember';
+      document.getElementById('nextStep2').textContent = '2. Rechercher → POST /agents/{id}/recall';
       document.getElementById('nextStep3').textContent = '3. Injecter → POST /agents/{id}/inject-context';
+    } else {
+      document.getElementById('nextStep1').textContent = '1. Store → POST /agents/{id}/remember';
+      document.getElementById('nextStep2').textContent = '2. Recall → POST /agents/{id}/recall';
+      document.getElementById('nextStep3').textContent = '3. Inject → POST /agents/{id}/inject-context';
     }
 
-    // Pre-fill demo fields
+    // Pre-fill ALL demo fields
     ['k1','k2','k3'].forEach(id => document.getElementById(id).value = data.full_key);
+    ['a1','a2','a3'].forEach(id => document.getElementById(id).value = data.agent_id);
 
   } catch(e) {
-    errEl.textContent = '→ ' + e.message;
+    let msg = e.message;
+    if(msg.includes('already exists')) {
+      msg = fr 
+        ? '→ Un email existe déjà pour cette adresse. Contactez-nous pour upgrader.'
+        : '→ A demo key already exists for this email. Contact us to upgrade.';
+    }
+    errEl.textContent = msg;
     btn.innerHTML = fr ? 'OBTENIR MA CLÉ →' : 'GET MY KEY →';
     btn.disabled = false;
   }
@@ -783,10 +797,22 @@ function copyKey() {
   navigator.clipboard.writeText(key).then(() => {
     const btn = document.getElementById('btnCopy');
     btn.textContent = lang === 'fr' ? '✓ COPIÉ !' : '✓ COPIED!';
-    btn.style.color = 'var(--lime)';
-    btn.style.borderColor = 'var(--lime)';
+    btn.style.color = 'var(--lime)'; btn.style.borderColor = 'var(--lime)';
     setTimeout(() => {
       btn.textContent = lang === 'fr' ? 'COPIER LA CLÉ' : 'COPY KEY TO CLIPBOARD';
+      btn.style.color = ''; btn.style.borderColor = '';
+    }, 2000);
+  });
+}
+
+function copyAgentId() {
+  const id = document.getElementById('generatedAgentId').textContent;
+  navigator.clipboard.writeText(id).then(() => {
+    const btn = document.getElementById('btnCopyAgent');
+    btn.textContent = lang === 'fr' ? '✓ COPIÉ !' : '✓ COPIED!';
+    btn.style.color = 'var(--cyan)'; btn.style.borderColor = 'var(--cyan)';
+    setTimeout(() => {
+      btn.textContent = lang === 'fr' ? "COPIER L'AGENT ID" : 'COPY AGENT ID';
       btn.style.color = ''; btn.style.borderColor = '';
     }, 2000);
   });
@@ -848,6 +874,10 @@ const _origSetLang = setLang;
         <div class="modal-key-box" id="generatedKey">sk-mem-...</div>
         <div class="modal-warn" id="warnOnce">⚠ Shown only once — store it somewhere safe</div>
         <button class="copy-btn" onclick="copyKey()" id="btnCopy">COPY KEY TO CLIPBOARD</button>
+        <div style="height:12px"></div>
+        <div class="modal-key-label" id="lAgentId">YOUR AGENT ID — pre-filled in the demo below</div>
+        <div class="modal-key-box" id="generatedAgentId" style="font-size:11px;color:var(--cyan)">...</div>
+        <button class="copy-btn" onclick="copyAgentId()" id="btnCopyAgent">COPY AGENT ID</button>
         <div style="height:16px"></div>
         <div class="modal-limit" id="nextStepsLabel">Next steps:<br>
           <span id="nextStep1">1. Create an agent → POST /api/v1/agents</span><br>

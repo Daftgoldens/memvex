@@ -3,8 +3,6 @@ from datetime import datetime
 from pydantic import BaseModel, Field
 
 
-# ── Agent ──────────────────────────────────────────────────────────────────────
-
 class AgentCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     description: str | None = None
@@ -19,8 +17,6 @@ class AgentResponse(BaseModel):
     memory_count: int = 0
     model_config = {"from_attributes": True}
 
-
-# ── Memory ─────────────────────────────────────────────────────────────────────
 
 class RememberRequest(BaseModel):
     content: str = Field(..., min_length=1)
@@ -66,16 +62,13 @@ class InjectContextResponse(BaseModel):
     memories: list[RecallResult]
 
 
-# ── Auth ───────────────────────────────────────────────────────────────────────
-
 class ApiKeyCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
 
 class ApiKeyDemoCreate(BaseModel):
-    """Créée depuis la landing page — clé de démo avec limite 100 mémoires."""
     name: str = Field(..., min_length=1, max_length=255)
     email: str = Field(..., min_length=3, max_length=255)
-    usecase: str = Field(..., min_length=10, max_length=1000, description="Describe your agent use case")
+    usecase: str = Field(..., min_length=10, max_length=1000)
 
 class ApiKeyResponse(BaseModel):
     id: uuid.UUID
@@ -89,10 +82,10 @@ class ApiKeyResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 class ApiKeyCreatedResponse(ApiKeyResponse):
-    full_key: str = Field(..., description="Store this securely — shown only once!")
+    full_key: str
 
 class DemoKeyCreatedResponse(BaseModel):
-    """Réponse simplifiée pour la landing page."""
     full_key: str
+    agent_id: str          # Agent créé automatiquement
     memory_limit: int
     message: str
