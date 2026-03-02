@@ -718,9 +718,9 @@ function translateModal() {
   document.getElementById('lName').textContent = fr ? 'VOTRE NOM' : 'YOUR NAME';
   document.getElementById('mName').placeholder = fr ? 'Baptiste' : 'Your name';
   document.getElementById('lEmail').textContent = fr ? 'EMAIL PROFESSIONNEL' : 'PROFESSIONAL EMAIL';
-  document.getElementById('lUsecase').textContent = fr ? 'DÉCRIVEZ VOTRE CAS D'USAGE' : 'DESCRIBE YOUR AGENT USE CASE';
+  document.getElementById('lUsecase').textContent = fr ? "DÉCRIVEZ VOTRE CAS D'USAGE" : 'DESCRIBE YOUR AGENT USE CASE';
   document.getElementById('mUsecase').placeholder = fr
-    ? 'ex: Bot support client qui doit mémoriser l'historique entre les sessions'
+    ? "ex: Bot support client qui doit mémoriser l'historique entre les sessions"
     : 'e.g. Customer support bot that needs to remember user history across sessions';
   document.getElementById('btnCancel').textContent = fr ? 'ANNULER' : 'CANCEL';
   document.getElementById('btnSubmit').textContent = fr ? 'OBTENIR MA CLÉ →' : 'GET MY KEY →';
@@ -737,7 +737,7 @@ async function submitDemo() {
   errEl.textContent = '';
   if(!name) { errEl.textContent = fr ? '→ Entrez votre nom' : '→ Enter your name'; return; }
   if(!email || !email.includes('@')) { errEl.textContent = fr ? '→ Email invalide' : '→ Invalid email'; return; }
-  if(usecase.length < 10) { errEl.textContent = fr ? '→ Décrivez votre cas d'usage (min 10 caractères)' : '→ Describe your use case (min 10 chars)'; return; }
+  if(usecase.length < 10) { errEl.textContent = fr ? "→ Décrivez votre cas d'usage (min 10 caractères)" : '→ Describe your use case (min 10 chars)'; return; }
 
   btn.innerHTML = '<span class="modal-spinner"></span>' + (fr ? 'GÉNÉRATION...' : 'GENERATING...');
   btn.disabled = true;
