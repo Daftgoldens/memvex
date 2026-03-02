@@ -41,4 +41,3 @@ curl -X POST https://YOUR-URL/api/v1/agents/{id}/inject-context \
 
 Live demo: [memvex demo page]
 
-Swagger UI: https://YOUR-URL/docs
