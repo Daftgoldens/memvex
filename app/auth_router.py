@@ -9,7 +9,7 @@ from app.models import ApiKey
 from app.schemas import ApiKeyCreate, ApiKeyResponse, ApiKeyCreatedResponse
 from app.auth import create_api_key, get_api_key
 
-router = APIRouter(tags=["Authentication"])
+router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 @router.post("/keys", response_model=ApiKeyCreatedResponse, status_code=201,
