@@ -1,4 +1,4 @@
-# 🧠 Agent Memory Layer
+# 🧠 Memvex
 
 **Give your AI agents long-term memory. One API. Three endpoints.**
 
