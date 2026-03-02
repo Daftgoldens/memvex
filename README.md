@@ -39,5 +39,5 @@ curl -X POST https://YOUR-URL/api/v1/agents/{id}/inject-context \
 
 ## Demo
 
-Live demo: [memvex demo page]
+Live demo: [[memvex demo page](https://daftgoldens.github.io/memvex/)]
 
