@@ -26,11 +26,10 @@ Three endpoints. One API key. Your agent goes from amnesiac to contextually awar
 
 ### Quick start
 
-**1. Create an API key** — no auth required for this step
+**1. Get a free demo key**
 ```
-POST /auth/keys  →  {"name": "my-project"}
+POST /auth/demo  →  {"name": "...", "email": "...", "usecase": "..."}
 ```
-Save the `full_key` — it's shown **only once**.
 
 **2. Add your key to every request**
 ```
@@ -39,31 +38,19 @@ X-API-Key: sk-mem-xxxxxxxx
 
 **3. Give your agent memory**
 ```
-POST /api/v1/agents                          → create an agent
-POST /api/v1/agents/{id}/remember            → store a memory
-POST /api/v1/agents/{id}/inject-context      → get context block ✨
-```
-
----
-
-### The killer feature: `/inject-context`
-
-Pass the user's message → get a ready-to-inject context block to prepend to your LLM system prompt.
-Your agent instantly knows who it's talking to, what happened before, and what matters.
-
-```
-[MEMVEX CONTEXT]
-- Alice is a premium customer since 2023 (similarity: 0.92)
-- Last session: billing issue unresolved (similarity: 0.88)
+POST /api/v1/agents/{id}/remember       → store a memory
+POST /api/v1/agents/{id}/inject-context → get context block ✨
 ```
     """,
     version="0.2.0",
     lifespan=lifespan,
 )
 
+# CORS — doit être AVANT les routers pour couvrir tous les endpoints y compris /auth/*
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
