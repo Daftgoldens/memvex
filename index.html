@@ -3,20 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Memvex — Long-term memory for AI agents</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Kronvex — Long-term memory for AI agents</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#03030a;--s1:#07070f;--s2:#0d0d1a;
-  --border:#151525;--border2:#1e1e35;
-  --text:#e8e8f0;--muted:#5a5a80;
-  --lime:#d4f54e;--lime2:#a8c73e;
-  --cyan:#38bdf8;--orange:#fb923c;
-  --green:#4ade80;--red:#f87171;
+  --bg:#060609;--s1:#0f1117;--s2:#13151f;
+  --border:#1e2030;--border2:#252840;
+  --text:#f8fafc;--muted:#64748b;
+  --lime:#6366f1;--lime2:#4f46e5;
+  --cyan:#3b82f6;--orange:#f59e0b;
+  --green:#10b981;--red:#ef4444;
+  --accent:#818cf8;
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,.004) 3px,rgba(255,255,255,.004) 4px);pointer-events:none;z-index:1}
 
 /* NAV */
@@ -29,15 +30,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 40px;display:fl
 .lang-btn{font-family:'JetBrains Mono',monospace;font-size:10px;padding:6px 14px;background:transparent;color:var(--muted);border:none;cursor:pointer;letter-spacing:1px;transition:all .2s}
 .lang-btn.active{background:var(--s2);color:var(--lime)}
 .nav-cta{background:var(--lime);color:#03030a;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;padding:10px 20px;border:none;letter-spacing:2px;cursor:pointer;transition:all .2s}
-.nav-cta:hover{background:var(--lime2)}
+.nav-cta:hover{background:var(--lime2);box-shadow:0 4px 20px rgba(99,102,241,.4)}
 
 /* HERO */
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 40px 80px;position:relative;z-index:2;overflow:hidden}
 .orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none}
-.orb1{width:700px;height:700px;background:rgba(212,245,78,.04);top:-200px;right:-150px}
-.orb2{width:500px;height:500px;background:rgba(56,189,248,.03);bottom:0;left:-150px}
+.orb1{width:700px;height:700px;background:rgba(99,102,241,.06);top:-200px;right:-150px}
+.orb2{width:500px;height:500px;background:rgba(59,130,246,.04);bottom:0;left:-150px}
 
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(212,245,78,.07);border:1px solid rgba(212,245,78,.18);padding:6px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--lime);letter-spacing:2px;margin-bottom:40px;width:fit-content}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3);padding:6px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--lime);letter-spacing:2px;margin-bottom:40px;width:fit-content}
 .hero-badge::before{content:'';width:6px;height:6px;background:var(--lime);border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
@@ -48,7 +49,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 40px;display:fl
 .hero-sub strong{color:var(--text)}
 .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:72px}
 .btn-primary{background:var(--lime);color:#03030a;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;padding:14px 32px;border:none;letter-spacing:2px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
-.btn-primary:hover{background:var(--lime2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(212,245,78,.25)}
+.btn-primary:hover{background:var(--lime2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(99,102,241,.35)}
 .btn-ghost{background:transparent;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;padding:14px 32px;border:1px solid var(--border2);letter-spacing:2px;cursor:pointer;transition:all .2s;text-decoration:none}
 .btn-ghost:hover{border-color:var(--lime);color:var(--lime)}
 
@@ -67,7 +68,7 @@ section{padding:96px 40px;position:relative;z-index:2}
 /* HOW IT WORKS */
 .how-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);margin-top:56px}
 .how-step{background:var(--s1);padding:36px;position:relative;overflow:hidden}
-.how-step::before{content:attr(data-num);position:absolute;top:-30px;right:16px;font-size:110px;font-weight:800;color:rgba(255,255,255,.018);font-family:'Syne',sans-serif}
+.how-step::before{content:attr(data-num);position:absolute;top:-30px;right:16px;font-size:110px;font-weight:800;color:rgba(255,255,255,.018);font-family:'Inter',sans-serif}
 .how-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--lime);letter-spacing:3px;margin-bottom:14px}
 .how-step h3{font-size:20px;font-weight:700;margin-bottom:10px}
 .how-step p{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:1.9}
@@ -113,12 +114,12 @@ section{padding:96px 40px;position:relative;z-index:2}
 .d-result .rk{color:var(--cyan)}
 .d-result .rv{color:var(--green)}
 .d-result .rn{color:var(--orange)}
-.ctx-block{background:rgba(212,245,78,.05);border-left:2px solid var(--lime);padding:12px;margin:8px 0;color:var(--text);white-space:pre-wrap}
+.ctx-block{background:rgba(212,245,78,.05);border-left:2px solid var(--accent);padding:12px;margin:8px 0;color:var(--text);white-space:pre-wrap}
 
 /* PRICING */
 .pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--border);margin-top:56px}
 .plan{background:var(--s1);padding:28px 24px;position:relative}
-.plan.hot{background:var(--s2);border-top:2px solid var(--lime)}
+.plan.hot{background:var(--s2);border-top:2px solid var(--lime);box-shadow:0 0 30px rgba(99,102,241,.15)}
 .plan-hot-badge{position:absolute;top:-1px;right:16px;background:var(--lime);color:#03030a;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;padding:3px 10px;letter-spacing:1px}
 .plan-name{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:3px;margin-bottom:10px}
 .plan-price{font-size:36px;font-weight:800;line-height:1;margin-bottom:4px}
@@ -202,9 +203,35 @@ footer{padding:56px 40px;border-top:1px solid var(--border);display:grid;grid-te
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">
-    <div class="nav-logo-text">memvex</div>
-    <div class="nav-logo-tag" data-i18n="nav-tag">MEMORY API</div>
+  <div class="nav-logo" style="display:flex;align-items:center;gap:10px">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" width="160" height="43">
+  <defs>
+    <linearGradient id="gw" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#a5b4fc"/>
+    </linearGradient>
+    <radialGradient id="gg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Orbital glow -->
+  <circle cx="32" cy="32" r="28" fill="url(#gg)"/>
+  <!-- Orbital rings -->
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#6366f1" stroke-width="0.8" stroke-dasharray="5 3" opacity="0.5"/>
+  <circle cx="32" cy="32" r="21" fill="none" stroke="#6366f1" stroke-width="0.5" opacity="0.3"/>
+  <!-- Hourglass top triangle -->
+  <polygon points="14,14 50,14 32,30" fill="none" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Hourglass bottom triangle -->
+  <polygon points="14,50 50,50 32,34" fill="none" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Sand at bottom -->
+  <polygon points="22,50 42,50 32,41" fill="#6366f1" opacity="0.7"/>
+  <!-- Center dot -->
+  <circle cx="32" cy="32" r="2.5" fill="#a5b4fc"/>
+  <!-- KRONVEX text -->
+  <text x="70" y="38" font-family="'JetBrains Mono', monospace" font-weight="500" font-size="22" fill="url(#gw)" letter-spacing="3">kronvex</text>
+</svg>
+    <div class="nav-logo-tag" data-i18n="nav-tag" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;background:var(--border);padding:2px 8px">MEMORY API</div>
   </div>
   <div class="nav-right">
     <div class="lang-toggle">
@@ -278,7 +305,97 @@ footer{padding:56px 40px;border-top:1px solid var(--border);display:grid;grid-te
       <div class="how-num" data-i18n="s4-num">04 / RESULT</div>
       <h3 data-i18n="s4-title">Your agent knows everything</h3>
       <p data-i18n="s4-desc">Without a single line of prompt engineering. Your LLM receives full context automatically, every time.</p>
-      <div class="code-block"><span class="cm">// System prompt becomes:</span><br><span class="str">[MEMVEX CONTEXT]</span><br><span class="str">- Alice: premium, prefers email</span><br><span class="str">- Last session: billing unresolved</span></div>
+      <div class="code-block"><span class="cm">// System prompt becomes:</span><br><span class="str">[KRONVEX CONTEXT]</span><br><span class="str">- Alice: premium, prefers email</span><br><span class="str">- Last session: billing unresolved</span></div>
+    </div>
+  </div>
+</section>
+
+
+<div class="divider"></div>
+
+<!-- INTEGRATION CONCRETE -->
+<section id="integration">
+  <div class="section-tag" data-i18n="integ-tag">// integration concrète</div>
+  <h2 class="section-title" data-i18n="integ-title">Comment l'intégrer<br>dans votre agent.</h2>
+  <p class="section-sub" data-i18n="integ-sub">Avant Kronvex, votre agent oublie tout. Après, il se souvient de chaque utilisateur.</p>
+
+  <!-- BEFORE / AFTER -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--border);margin-top:40px">
+    <div style="background:var(--s1);padding:28px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--red);letter-spacing:3px;margin-bottom:14px">✗ SANS KRONVEX</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.9;color:var(--muted)">
+        <span style="color:var(--text)">User:</span> "J'ai encore ce problème de facturation dont on avait parlé"<br>
+        <span style="color:var(--text)">Agent:</span> <span style="color:var(--red)">"Je suis désolé, je n'ai pas accès aux conversations précédentes. Pouvez-vous m'expliquer votre problème ?"</span><br><br>
+        <span style="color:var(--text)">User:</span> "Mon abonnement Premium depuis janvier..."<br>
+        <span style="color:var(--text)">Agent:</span> <span style="color:var(--red)">"Quel est votre plan actuel ?"</span><br><br>
+        <span style="color:var(--red);font-size:10px">→ L'utilisateur répète tout depuis le début.<br>→ Expérience frustrante. Taux de churn élevé.</span>
+      </div>
+    </div>
+    <div style="background:var(--s2);padding:28px;border-top:2px solid var(--lime)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);letter-spacing:3px;margin-bottom:14px">✓ AVEC KRONVEX</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.9;color:var(--muted)">
+        <span style="color:var(--muted);font-size:9px">// Kronvex injecte automatiquement dans le system prompt :</span><br>
+        <span style="color:var(--accent)">[KRONVEX CONTEXT]<br>- Client Premium depuis jan 2023 (0.94)<br>- Problème facturation signalé le 28 fév (0.91)<br>- Contact préféré : email (0.87)</span><br><br>
+        <span style="color:var(--text)">User:</span> "J'ai encore ce problème de facturation"<br>
+        <span style="color:var(--text)">Agent:</span> <span style="color:var(--green)">"Bonjour ! Je vois que votre problème de facturation du 28 février n'est pas encore résolu. Je m'en occupe immédiatement."</span><br><br>
+        <span style="color:var(--green);font-size:10px">→ Zéro répétition. Expérience premium.<br>→ Satisfaction client maximale.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW TO INTEGRATE -->
+  <div style="margin-top:40px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--lime);letter-spacing:3px;margin-bottom:20px" data-i18n="integ-code-title">// 3 LIGNES DE CODE SUFFISENT</div>
+    <div style="background:var(--s1);border:1px solid var(--border2);border-top:2px solid var(--lime)">
+      <div style="background:var(--s2);padding:10px 16px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px">VOTRE AGENT — AVANT vs APRÈS</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+        <div style="padding:20px 20px;border-right:1px solid var(--border)">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--red);letter-spacing:2px;margin-bottom:12px">AVANT (code actuel)</div>
+          <pre style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:1.8;margin:0">def chat(user_message):
+  system = <span style="color:var(--muted)">"You are a helpful assistant."</span>
+  <span style="color:var(--muted)"># pas de contexte</span>
+  response = llm.call(
+    system,
+    user_message
+  )
+  <span style="color:var(--muted)"># rien n'est sauvegardé</span>
+  return response</pre>
+        </div>
+        <div style="padding:20px 20px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);letter-spacing:2px;margin-bottom:12px">APRÈS (+3 lignes Kronvex)</div>
+          <pre style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:1.8;margin:0">def chat(user_message):
+  <span style="color:var(--accent)">ctx = kronvex.inject(user_message) <span style="color:var(--muted)"># ← 1</span></span>
+  system = <span style="color:var(--accent)">f"{ctx}
+"</span> + <span style="color:var(--muted)">"You are a helpful assistant."</span>
+  response = llm.call(
+    system,
+    user_message
+  )
+  <span style="color:var(--accent)">kronvex.remember(user_message)    <span style="color:var(--muted)"># ← 2</span></span>
+  <span style="color:var(--accent)">kronvex.remember(response)        <span style="color:var(--muted)"># ← 3</span></span>
+  return response</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKS WITH ANY LLM -->
+  <div style="margin-top:32px;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--border)">
+    <div style="background:var(--s1);padding:20px;text-align:center">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);margin-bottom:6px">OpenAI</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)">GPT-4o, GPT-4</div>
+    </div>
+    <div style="background:var(--s1);padding:20px;text-align:center">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);margin-bottom:6px">Anthropic</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)">Claude 3.5, Claude 3</div>
+    </div>
+    <div style="background:var(--s1);padding:20px;text-align:center">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);margin-bottom:6px">Mistral</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)">Mistral Large, 8x7B</div>
+    </div>
+    <div style="background:var(--s1);padding:20px;text-align:center">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);margin-bottom:6px">Any LLM</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)">LangChain, CrewAI...</div>
     </div>
   </div>
 </section>
@@ -450,7 +567,33 @@ footer{padding:56px 40px;border-top:1px solid var(--border);display:grid;grid-te
 <!-- FOOTER -->
 <footer>
   <div class="ft-brand">
-    <div class="logo">memvex</div>
+    <div style="margin-bottom:12px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" width="160" height="43">
+  <defs>
+    <linearGradient id="gw" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#a5b4fc"/>
+    </linearGradient>
+    <radialGradient id="gg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Orbital glow -->
+  <circle cx="32" cy="32" r="28" fill="url(#gg)"/>
+  <!-- Orbital rings -->
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#6366f1" stroke-width="0.8" stroke-dasharray="5 3" opacity="0.5"/>
+  <circle cx="32" cy="32" r="21" fill="none" stroke="#6366f1" stroke-width="0.5" opacity="0.3"/>
+  <!-- Hourglass top triangle -->
+  <polygon points="14,14 50,14 32,30" fill="none" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Hourglass bottom triangle -->
+  <polygon points="14,50 50,50 32,34" fill="none" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Sand at bottom -->
+  <polygon points="22,50 42,50 32,41" fill="#6366f1" opacity="0.7"/>
+  <!-- Center dot -->
+  <circle cx="32" cy="32" r="2.5" fill="#a5b4fc"/>
+  <!-- KRONVEX text -->
+  <text x="70" y="38" font-family="'JetBrains Mono', monospace" font-weight="500" font-size="22" fill="url(#gw)" letter-spacing="3">kronvex</text>
+</svg></div>
     <p data-i18n="ft-desc">Long-term memory infrastructure<br>for B2B AI agents.<br><br>Built in Paris 🇫🇷 · EU data residency<br>GDPR compliant · API v0.2</p>
   </div>
   <div class="ft-col">
@@ -462,7 +605,7 @@ footer{padding:56px 40px;border-top:1px solid var(--border);display:grid;grid-te
   </div>
   <div class="ft-col">
     <h4 data-i18n="ft-dev">DEVELOPERS</h4>
-    <a href="https://agent-memory-layer-production.up.railway.app/docs" target="_blank">Swagger UI</a>
+    <a href="https://kronvex.up.railway.app/docs" target="_blank">Swagger UI</a>
     <a href="#" data-i18n="ft-docs">Documentation</a>
     <a href="#" data-i18n="ft-status">Status page</a>
     <a href="#" data-i18n="ft-contact">Contact</a>
@@ -472,7 +615,7 @@ footer{padding:56px 40px;border-top:1px solid var(--border);display:grid;grid-te
 <div class="toast" id="toast"></div>
 
 <script>
-const BASE = "https://memvex.up.railway.app";
+const BASE = "https://kronvex.up.railway.app";
 
 // ── i18n ─────────────────────────────────────────────────────────────────────
 const translations = {
@@ -483,7 +626,7 @@ const translations = {
     "sub":"Plug-and-play <strong>memory infrastructure</strong> for B2B AI agents.<br>Three endpoints. One API key. Your agent goes from<br>amnesiac to contextually aware in minutes.",
     "cta1":"TRY THE DEMO →","cta2":"VIEW API DOCS",
     "m1":"Core endpoints","m2":"Avg recall time","m3":"Memories per agent","m4":"Data residency",
-    "how-tag":"// how it works","how-title":"Three endpoints.<br>Infinite memory.",
+    "integ-tag":"// concrete integration","integ-title":"How to integrate it<br>into your agent.","integ-sub":"Before Kronvex, your agent forgets everything. After, it remembers every user.","integ-code-title":"// 3 LINES OF CODE IS ALL IT TAKES","how-tag":"// how it works","how-title":"Three endpoints.<br>Infinite memory.",
     "how-sub":"No new architecture. Drop three API calls into your existing agent and it remembers everything.",
     "s1-num":"01 / STORE","s1-title":"Remember anything","s1-desc":"Text → embedding → pgvector. Your agent stores facts, events, preferences. We handle the vectorization.",
     "s2-num":"02 / SEARCH","s2-title":"Recall by meaning","s2-desc":"Cosine similarity on HNSW index. Retrieves the most relevant memories for any query in milliseconds.",
@@ -531,7 +674,7 @@ const translations = {
     "sub":"Infrastructure <strong>mémoire plug-and-play</strong> pour agents IA B2B.<br>Trois endpoints. Une clé API. Votre agent passe<br>d'amnésique à contextuel en quelques minutes.",
     "cta1":"TESTER LA DÉMO →","cta2":"VOIR LA DOC API",
     "m1":"Endpoints principaux","m2":"Temps de rappel moyen","m3":"Mémoires par agent","m4":"Données hébergées EU",
-    "how-tag":"// comment ça marche","how-title":"Trois endpoints.<br>Mémoire infinie.",
+    "integ-tag":"// intégration concrète","integ-title":"Comment l'intégrer<br>dans votre agent.","integ-sub":"Avant Kronvex, votre agent oublie tout. Après, il se souvient de chaque utilisateur.","integ-code-title":"// 3 LIGNES DE CODE SUFFISENT","how-tag":"// comment ça marche","how-title":"Trois endpoints.<br>Mémoire infinie.",
     "how-sub":"Aucune nouvelle architecture. Ajoutez trois appels API à votre agent existant et il se souvient de tout.",
     "s1-num":"01 / STOCKER","s1-title":"Tout retenir","s1-desc":"Texte → embedding → pgvector. Votre agent stocke des faits, événements, préférences. On gère la vectorisation.",
     "s2-num":"02 / CHERCHER","s2-title":"Rappel par sens","s2-desc":"Similarité cosinus sur index HNSW. Retrouve les mémoires les plus pertinentes en quelques millisecondes.",
@@ -806,8 +949,8 @@ async function submitDemo() {
     let msg = e.message;
     if(msg.includes('already exists') || msg.includes('demo key already')) {
       msg = fr 
-        ? '📩 Cet email a déjà une clé démo. Vérifiez votre boîte mail ou écrivez-nous à hello.memvex@gmail.com pour upgrader.'
-        : '📩 This email already has a demo key. Check your inbox or write to hello.memvex@gmail.com to upgrade.';
+        ? '📩 Cet email a déjà une clé démo. Vérifiez votre boîte mail ou écrivez-nous à hello.kronvex@gmail.com pour upgrader.'
+        : '📩 This email already has a demo key. Check your inbox or write to hello.kronvex@gmail.com to upgrade.';
     } else if(msg.includes('failed to fetch') || msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
       msg = fr
         ? '⚠ Erreur réseau — vérifiez votre connexion et réessayez.'

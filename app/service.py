@@ -12,11 +12,13 @@ from app.schemas import (
     InjectContextRequest, InjectContextResponse,
 )
 from app.embeddings import embed
-from app.auth import check_memory_limit
+from app.auth import check_memory_limit, check_agent_limit
 
 
-async def create_agent(db: AsyncSession, data: AgentCreate, api_key_id: uuid.UUID) -> AgentResponse:
-    agent = Agent(name=data.name, description=data.description, metadata_=data.metadata, api_key_id=api_key_id)
+async def create_agent(db: AsyncSession, data: AgentCreate, api_key: ApiKey) -> AgentResponse:
+    """Crée un agent après avoir vérifié la limite du plan."""
+    await check_agent_limit(db, api_key)
+    agent = Agent(name=data.name, description=data.description, metadata_=data.metadata, api_key_id=api_key.id)
     db.add(agent)
     await db.commit()
     await db.refresh(agent)
@@ -43,7 +45,7 @@ async def list_agents(db: AsyncSession, api_key_id: uuid.UUID) -> list[AgentResp
 
 
 async def remember(db: AsyncSession, agent_id: uuid.UUID, data: RememberRequest, api_key: ApiKey) -> MemoryResponse:
-    # Vérifier la limite avant d'embedder (évite de gaspiller des appels OpenAI)
+    """Stocke une mémoire après avoir vérifié la limite du plan."""
     await check_memory_limit(db, api_key)
     vector = await embed(data.content)
     memory = Memory(agent_id=agent_id, content=data.content, embedding=vector,
@@ -84,7 +86,7 @@ async def inject_context(db: AsyncSession, agent_id: uuid.UUID, data: InjectCont
     recall_result = await recall(db, agent_id, RecallRequest(query=data.message, top_k=data.top_k, threshold=data.threshold))
     if not recall_result.results:
         return InjectContextResponse(context_block="", memories_used=0, memories=[])
-    lines = ["[MEMVEX CONTEXT]"]
+    lines = ["[KRONVEX CONTEXT]"]
     for r in recall_result.results:
         lines.append(f"- {r.memory.content} (similarity: {r.similarity})")
     return InjectContextResponse(context_block="\n".join(lines), memories_used=len(recall_result.results), memories=recall_result.results)

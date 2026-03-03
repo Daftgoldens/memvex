@@ -19,11 +19,17 @@ class ApiKey(Base):
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
-    # Demo mode — clé générée via la landing page
+    # Plan commercial
+    plan: Mapped[str] = mapped_column(String(50), default="demo")
+
+    # Demo mode
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False)
-    memory_limit: Mapped[int | None] = mapped_column(Integer, nullable=True)  # None = illimité
     contact_email: Mapped[str | None] = mapped_column(String(255), nullable=True)
     contact_usecase: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Quotas (None = illimité)
+    memory_limit: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    agent_limit: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
