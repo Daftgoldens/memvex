@@ -1,4 +1,4 @@
-# Memvex
+# Kronvex
 
 > Long-term memory infrastructure for B2B AI agents.
 
@@ -39,5 +39,5 @@ curl -X POST https://YOUR-URL/api/v1/agents/{id}/inject-context \
 
 ## Demo
 
-Live demo: [[memvex demo page](https://daftgoldens.github.io/memvex/)]
+Live demo: [[kronvex demo page](https://daftgoldens.github.io/kronvex/)]
 
